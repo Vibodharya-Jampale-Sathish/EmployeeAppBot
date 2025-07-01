@@ -125,10 +125,13 @@
 
       try {
         const res = await fetch("/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: userText })
-        });
+        method: "POST",
+        headers: {
+                  "Content-Type": "application/json"
+                  },
+        body: JSON.stringify({ message: userText })
+      });
+
 
         const data = await res.json();
         const botReply = data.response || data.error || "Sorry, something went wrong.";
