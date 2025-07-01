@@ -13,9 +13,14 @@ from langchain_community.document_loaders import TextLoader
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from pathlib import Path
+from fastapi.middleware.cors import CORSMiddleware
 
 # Load environment variables
 load_dotenv()
+
+
+
+
 
 # --- Load ENV variables ---
 astra_db_config = {
@@ -86,6 +91,14 @@ app = FastAPI()
 
 class Query(BaseModel):
     message: str
+    
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # allow all for now
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/chat")
 async def chat(query: Query):
