@@ -1,6 +1,7 @@
 Frequently Asked Questions (FAQ)
 
 Authentication
+The Name of the Company is Employee Management System / EMS
 
 Q1: How do I register my company?A: Click on the "Register" button on the homepage and fill in your desired username and password. Once registered, you can log in and begin adding departments and employees.
 
@@ -36,3 +37,33 @@ Q9: I logged in but don't see any data. Why?A: Ensure you've added departments a
 
 Q10: I see a database connection error.A: Check your PostgreSQL credentials in the backend code and ensure the PostgreSQL server is running. Also, make sure to change the default password before deploying.
 
+Question 11: What is the database structure used by the Employee Management App, and what is it used for? A: The Employee Management App uses a relational database structured around the needs of managing multiple companies, their departments, and employees.
+
+The main tables include:
+
+1. Company_Login_Details
+   - Company_ID (Primary Key)
+   - Username
+   - Password
+
+2. Department_Details
+   - Department_ID (Primary Key)
+   - Company_ID (Foreign Key)
+   - Department_Name
+
+3. Employee_Details
+   - Employee_ID (Primary Key)
+   - Company_ID (Foreign Key)
+   - FullName
+   - Email
+   - Phone
+   - Department_ID (Foreign Key)
+   - Job_Title
+   - Date_Joined
+
+This structure allows each registered company to:
+- Authenticate securely
+- Add multiple departments under their company
+- Manage employee data within those departments
+
+Each employee record is linked to a specific department and company, ensuring clean separation and scalability across multiple organizations using the same platform.
