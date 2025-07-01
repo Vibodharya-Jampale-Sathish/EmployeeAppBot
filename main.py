@@ -73,7 +73,7 @@ Answer:
 # --- Initialize OpenAI LLM ---
 llm = ChatOpenAI(
     temperature=0.7,
-    model_name="gpt-3.5-turbo",
+    model_name = "gpt-4-1-mini", # Use a smaller model for faster responses
     openai_api_key=openai_api_key
 )
 

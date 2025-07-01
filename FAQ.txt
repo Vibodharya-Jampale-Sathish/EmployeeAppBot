@@ -49,17 +49,14 @@ The main tables include:
 2. Department_Details
    - Department_ID (Primary Key)
    - Company_ID (Foreign Key)
-   - Department_Name
+   - DepartmentName
+   - DepartmentDescription
 
 3. Employee_Details
    - Employee_ID (Primary Key)
    - Company_ID (Foreign Key)
    - FullName
-   - Email
-   - Phone
    - Department_ID (Foreign Key)
-   - Job_Title
-   - Date_Joined
 
 This structure allows each registered company to:
 - Authenticate securely
