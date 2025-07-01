@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LangChain Chatbot</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background-color: #0074D9;
+      color: white;
+      padding: 1rem 2rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    #chat-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #chat-box {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 700px;
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #chat {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      background-color: #fafafa;
+    }
+
+    .message {
+      margin: 0.8rem 0;
+      line-height: 1.4;
+    }
+
+    .user {
+      color: #0074D9;
+      font-weight: bold;
+    }
+
+    .bot {
+      color: #2ECC40;
+      font-weight: bold;
+    }
+
+    #input-area {
+      display: flex;
+      border-top: 1px solid #ddd;
+      padding: 0.75rem;
+      background-color: #f8f8f8;
+    }
+
+    #userInput {
+      flex: 1;
+      padding: 0.75rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    button {
+      margin-left: 0.5rem;
+      padding: 0.75rem 1.2rem;
+      font-size: 1rem;
+      background-color: #0074D9;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+  </style>
+</head>
+<body>
+  <header>🚀 EMS Assistant</header>
+
+  <div id="chat-container">
+    <div id="chat-box">
+      <div id="chat">
+        <div class="message"><span class="bot">Bot:</span> Hi! Ask me anything about the app or company policies.</div>
+      </div>
+      <div id="input-area">
+        <input id="userInput" type="text" placeholder="Type your message..." />
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById('userInput');
+      const chat = document.getElementById('chat');
+      const userText = input.value.trim();
+      if (!userText) return;
+
+      // Add user's message
+      chat.innerHTML += `<div class="message"><span class="user">You:</span> ${userText}</div>`;
+      input.value = '';
+      chat.scrollTop = chat.scrollHeight;
+
+      try {
+        const res = await fetch('http://127.0.0.1:8000/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userText })
+        });
+
+        const data = await res.json();
+        const botReply = data.response || data.error || "Sorry, something went wrong.";
+        chat.innerHTML += `<div class="message"><span class="bot">Bot:</span> ${botReply}</div>`;
+        chat.scrollTop = chat.scrollHeight;
+      } catch (err) {
+        chat.innerHTML += `<div class="message"><span class="bot">Bot:</span> Error: Failed to fetch server response.</div>`;
+        chat.scrollTop = chat.scrollHeight;
+      }
+    }
+
+    // Send on Enter key
+    document.getElementById('userInput').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') sendMessage();
+    });
+  </script>
+</body>
+</html>

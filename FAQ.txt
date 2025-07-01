@@ -1,0 +1,38 @@
+Frequently Asked Questions (FAQ)
+
+Authentication
+
+Q1: How do I register my company?A: Click on the "Register" button on the homepage and fill in your desired username and password. Once registered, you can log in and begin adding departments and employees.
+
+Q2: I forgot my password. What should I do?A: Password recovery is not available through the app at this time. Please contact your system administrator to reset it manually.
+
+Employee Management
+
+Q3: How do I add an employee?A: Go to the "Add Employee" section after logging in. Fill in the employee's full name and assign them to a department. Then click "Submit."
+
+Q4: Can I edit or remove employee details later?A: Yes. Go to the "Employee List" to view all records. Each employee row has options to Edit or Delete their details.
+
+Department Management
+
+Q5: Do I need to create departments first?A: Yes. You must create at least one department before adding employees, as every employee must be assigned to a department.
+
+Q6: How do I create a department?A: Navigate to the "Departments" section and click "Add Department." Provide the name and a short description.
+
+Technical & Database
+
+Q7: What database does this app use?A: The application uses PostgreSQL with three main tables:
+
+Company_Login_Details
+
+Departments
+
+Employee_Details
+
+Q8: How can I set up the database?A: Run the provided database.sql file using a terminal or pgAdmin to create the required tables and structure.
+
+Common Issues
+
+Q9: I logged in but don't see any data. Why?A: Ensure you've added departments and employees under your logged-in company. Each company's data is isolated and not shared.
+
+Q10: I see a database connection error.A: Check your PostgreSQL credentials in the backend code and ensure the PostgreSQL server is running. Also, make sure to change the default password before deploying.
+
