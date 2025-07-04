@@ -1,4 +1,5 @@
-# 🧠 Employee Application Bot (FastAPI + LangChain + AstraDB)
+# 🧠 Employee Application Bot 
+Link: https://employeeappbot.onrender.com/
 
 This project is a conversational AI chatbot for employee-related queries, built using **FastAPI**, **LangChain**, and **AstraDB**. It integrates vector-based retrieval and OpenAI-powered language models to understand and respond to natural language input.
 
