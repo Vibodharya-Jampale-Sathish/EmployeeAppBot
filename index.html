@@ -2,23 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>LangChain Chatbot</title>
+  <title>🏢 EMS FAQ Assistant</title>
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: #f0f2f5;
+      background: #eff6ff;
       display: flex;
       flex-direction: column;
       height: 100vh;
     }
 
     header {
-      background-color: #0074D9;
+      background-color: #1d4ed8;
       color: white;
       padding: 1rem 2rem;
-      font-size: 1.5rem;
-      font-weight: bold;
+      font-size: 1.6rem;
+      font-weight: 600;
       text-align: center;
     }
 
@@ -27,14 +27,15 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      padding: 1rem;
     }
 
     #chat-box {
       background: white;
       border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       width: 100%;
-      max-width: 700px;
+      max-width: 720px;
       height: 80vh;
       display: flex;
       flex-direction: column;
@@ -45,29 +46,36 @@
       flex: 1;
       padding: 1rem;
       overflow-y: auto;
-      background-color: #fafafa;
+      background-color: #f9fafb;
+      scroll-behavior: smooth;
     }
 
     .message {
       margin: 0.8rem 0;
-      line-height: 1.4;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      max-width: 85%;
+      line-height: 1.5;
     }
 
     .user {
-      color: #0074D9;
-      font-weight: bold;
+      background-color: #2563eb;
+      color: white;
+      align-self: flex-end;
+      text-align: right;
     }
 
     .bot {
-      color: #2ECC40;
-      font-weight: bold;
+      background-color: #dbeafe;
+      color: #1e3a8a;
+      align-self: flex-start;
     }
 
     #input-area {
       display: flex;
       border-top: 1px solid #ddd;
       padding: 0.75rem;
-      background-color: #f8f8f8;
+      background-color: #e0f2fe;
     }
 
     #userInput {
@@ -83,7 +91,7 @@
       margin-left: 0.5rem;
       padding: 0.75rem 1.2rem;
       font-size: 1rem;
-      background-color: #0074D9;
+      background-color: #2563eb;
       color: white;
       border: none;
       border-radius: 6px;
@@ -92,62 +100,102 @@
     }
 
     button:hover {
-      background-color: #005fa3;
+      background-color: #1e40af;
+    }
+
+    .typing {
+      font-style: italic;
+      color: #666;
+      margin: 0.5rem 0;
+      padding-left: 0.5rem;
+    }
+
+    .disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
   </style>
 </head>
 <body>
-  <header>🚀 EMS Assistant</header>
+  <header>🏢 Employee Management FAQ Assistant</header>
 
   <div id="chat-container">
     <div id="chat-box">
       <div id="chat">
-        <div class="message"><span class="bot">Bot:</span> Hi! Ask me anything about the app or company policies.</div>
+        <div class="message bot">👋 Welcome! I can help you with common employee queries. Ask about leave policies, onboarding, login issues, or HR contact info.</div>
       </div>
       <div id="input-area">
-        <input id="userInput" type="text" placeholder="Type your message..." />
-        <button onclick="sendMessage()">Send</button>
+        <input id="userInput" type="text" placeholder="Type your EMS question..." />
+        <button id="sendBtn" onclick="sendMessage()">Ask</button>
       </div>
     </div>
   </div>
 
   <script>
-    async function sendMessage() {
-      const input = document.getElementById('userInput');
-      const chat = document.getElementById('chat');
-      const userText = input.value.trim();
-      if (!userText) return;
+    const chat = document.getElementById('chat');
+    const input = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    let queryCount = 0;
+    const MAX_QUERIES = 20;
 
-      // Add user's message
-      chat.innerHTML += `<div class="message"><span class="user">You:</span> ${userText}</div>`;
+    async function sendMessage() {
+      const userText = input.value.trim();
+      if (!userText || sendBtn.classList.contains('disabled')) return;
+
+      appendMessage(userText, 'user');
       input.value = '';
-      chat.scrollTop = chat.scrollHeight;
+      scrollToBottom();
+
+      if (++queryCount > MAX_QUERIES) {
+        appendMessage("⚠️ You've reached the 20-question limit. Please refresh the page to reset.", 'bot');
+        disableInput();
+        return;
+      }
+
+      const typing = document.createElement("div");
+      typing.className = "typing";
+      typing.textContent = "Answering...";
+      chat.appendChild(typing);
+      scrollToBottom();
 
       try {
         const res = await fetch("/chat", {
-        method: "POST",
-        headers: {
-                  "Content-Type": "application/json"
-                  },
-        body: JSON.stringify({ message: userText })
-      });
-
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userText }),
+        });
 
         const data = await res.json();
-        const botReply = data.response || data.error || "Sorry, something went wrong.";
-        chat.innerHTML += `<div class="message"><span class="bot">Bot:</span> ${botReply}</div>`;
-        chat.scrollTop = chat.scrollHeight;
-      } catch (err) {
-        chat.innerHTML += `<div class="message"><span class="bot">Bot:</span> Error: Failed to fetch server response.</div>`;
-        chat.scrollTop = chat.scrollHeight;
+        chat.removeChild(typing);
+        appendMessage(data.response || data.error || "⚠️ Sorry, something went wrong.", 'bot');
+        scrollToBottom();
+      } catch {
+        chat.removeChild(typing);
+        appendMessage("❌ Error: Could not reach the server.", 'bot');
+        scrollToBottom();
       }
     }
 
-    // Send on Enter key
-    document.getElementById('userInput').addEventListener('keypress', function (e) {
+    function appendMessage(text, sender) {
+      const msg = document.createElement('div');
+      msg.className = `message ${sender}`;
+      msg.textContent = (sender === 'user' ? "You: " : "Bot: ") + text;
+      chat.appendChild(msg);
+    }
+
+    function scrollToBottom() {
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function disableInput() {
+      input.disabled = true;
+      sendBtn.disabled = true;
+      sendBtn.classList.add('disabled');
+    }
+
+    input.addEventListener('keypress', function (e) {
       if (e.key === 'Enter') sendMessage();
     });
   </script>
 </body>
 </html>
-
